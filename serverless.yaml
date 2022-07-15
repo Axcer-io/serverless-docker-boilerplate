@@ -1,0 +1,58 @@
+service:
+  name: contacts-service
+
+custom:
+  environment: ${opt:stage, 'dev'}
+  profile: ${opt:stage, 'dev'}
+  path: contact
+  version: ${opt:version, 'api/v1'}
+
+provider:
+  name: aws
+  stage: ${self:custom.profile}
+  region: us-east-1
+  environment: ${file(config/env.yaml):${self:custom.environment}}
+  ecr:
+    images:
+      appimage:
+        path: ./
+package:
+  include: config/*.yaml
+
+functions:
+  main:
+    image:
+      name: appimage
+      command:
+        - dist/src/handler/lambda.handler
+      entryPoint:
+        - '/lambda-entrypoint.sh'
+    events:
+      - http:
+          method: any
+          path: /{proxy+}
+      - http:
+          cors: true
+          method: post
+          path: ${self:custom.path}
+      - http:
+          cors: true
+          method: put
+          path: ${self:custom.path}/{id}
+      - http:
+          cors: true
+          method: get
+          path: ${self:custom.path}/{id}
+      - http:
+          cors: true
+          method: delete
+          path: ${self:custom.path}/{id}
+      - http:
+          cors: true
+          method: get
+          path: ${self:custom.path}/all
+      - http:
+          cors: true
+          method: get
+          path: ${self:custom.path}/health-check
+      

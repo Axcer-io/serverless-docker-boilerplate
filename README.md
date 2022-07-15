@@ -58,7 +58,7 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## Installation
+## Deploy
 
 Configure aws account
 

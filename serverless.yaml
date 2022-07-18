@@ -1,5 +1,5 @@
 service:
-  name: contacts-service
+  name: contacts-service-docker
 
 custom:
   environment: ${opt:stage, 'dev'}
